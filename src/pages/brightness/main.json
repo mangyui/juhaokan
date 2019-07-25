@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "van-slider": "../../../static/vant/slider/index",
+    "van-icon": "../../../static/vant/icon/index"
+  }
+}
