@@ -9,6 +9,12 @@ const toPost = {
     return fly.request('https://api.apiopen.top/getImages', qs.stringify(datas), {
       method: 'post'
     })
+  },
+  // 获取段子
+  getJokes (datas) {
+    return fly.request('https://api.apiopen.top/getJoke', qs.stringify(datas), {
+      method: 'post'
+    })
   }
 }
 

@@ -3,10 +3,10 @@
     <mNav mtitle="聚好看" :isBorder="false"></mNav>
     <div class="list-top">
       <van-tabs class="mc-tab" :active="activeType" swipeable @change="onChange">
-        <van-tab title="新闻">内容 1</van-tab>
+        <van-tab title="视频"><videosBox></videosBox></van-tab>
         <van-tab title="图片"><imagesBox></imagesBox></van-tab>
         <van-tab title="音乐"><musicsBox></musicsBox></van-tab>
-        <van-tab title="段子"><imgBox></imgBox></van-tab>
+        <van-tab title="段子"><jokeBox></jokeBox></van-tab>
       </van-tabs>
     </div>
   </div>
@@ -14,26 +14,28 @@
 
 <script>
 import mNav from '@/components/small/mNav'
+import videosBox from './videos'
 import imagesBox from './images'
 import musicsBox from './musics'
-import imgBox from './imgbox'
+import jokeBox from './jokes'
 
 export default {
   components: {
     mNav,
+    videosBox,
     imagesBox,
     musicsBox,
-    imgBox
+    jokeBox
   },
   data () {
     return {
-      activeType: 1
+      activeType: 0
     }
   },
   methods: {
     onChange (event) {
       this.activeType = event.mp.detail.index
-      this.$store.commit('updateType', event.mp.detail.index)
+      // this.$store.commit('updateType', event.mp.detail.index)
     }
   },
   beforeMount () {

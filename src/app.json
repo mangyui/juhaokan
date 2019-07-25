@@ -1,8 +1,8 @@
 {
   "pages": [
-    "pages/layout/main",
-    "pages/log/main",
     "pages/index/main",
+    "pages/log/main",
+    "pages/layout/main",
     "pages/brightness/main"
   ],
   "requiredBackgroundModes": ["audio"],

@@ -5,8 +5,7 @@
         <image class="width100" :src="item" mode="scaleToFill"></image>
       </swiper-item>
     </swiper>
-
-    <div>
+    <div v-if="weather">
       <van-notice-bar v-show="weather.ganmao" :text="weather.ganmao"/>
       <div class="wea-today-box">
         <b>{{weather.wendu}}℃</b>
@@ -75,7 +74,7 @@ export default {
             this.mydelete2(this.weather.forecast[i])
           }
           this.myadd2()
-          console.log(this.weather)
+          // console.log(this.weather)
         })
         .catch((error) => {
           this.text = error

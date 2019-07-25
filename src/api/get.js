@@ -9,8 +9,15 @@ const toget = {
       method: 'get'
     })
   },
+  // 获取音乐
   getMusics (datas) {
     return fly.request('https://api.apiopen.top/searchMusic', datas, {
+      method: 'get'
+    })
+  },
+  // 获取视频
+  getVideos (datas) {
+    return fly.request('https://api.apiopen.top/videoRecommend', datas, {
       method: 'get'
     })
   }

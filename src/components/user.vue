@@ -51,7 +51,7 @@ export default {
         success (res) {
           const latitude = res.latitude
           const longitude = res.longitude
-          console.log(latitude, latitude)
+          // console.log(latitude, latitude)
           wx.openLocation({
             latitude,
             longitude,
@@ -78,7 +78,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.user)
+    // console.log(this.user)
   },
   created () {
     this.getPhone()

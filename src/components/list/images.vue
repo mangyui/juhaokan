@@ -3,7 +3,7 @@
     <scroll-view :style="{'height': wheight+'px'}" :scroll-y="true" @scrolltolower="getMore">
       <div class="imgs-box">
         <div class="imgs-item" v-for="(item, index) in imgs" :key="item">
-          <img :src="item.img" :lazy-load="true" mode="aspectFill"/>
+          <img :src="item.img" :lazy-load="true" mode="aspectFill" @click="toPreview(item)" @error="errorFunction(index)"/>
           <span><van-button size="small" type="danger">收藏</van-button></span>
         </div>
       </div>
@@ -20,8 +20,8 @@ export default {
     return {
       imgs: [],
       wheight: 675,
+      page: 1,
       getParameters: {
-        page: 1,
         count: 20
       }
     }
@@ -39,8 +39,17 @@ export default {
   //   }
   // },
   methods: {
+    errorFunction (index) {
+      this.imgs.splice(index, 1)
+    },
+    toPreview (imgObj) {
+      wx.previewImage({
+        // current: '', // 当前显示图片的http链接
+        urls: [imgObj.img] // 需要预览的图片http链接列表
+      })
+    },
     getImages (index) {
-      this.getParameters.page = index
+      this.page = index
       this.$toPost.getImages(this.getParameters)
         .then((response) => {
           if (index === 1) {
@@ -48,18 +57,20 @@ export default {
           } else {
             this.imgs = this.imgs.concat(response.data.result)
           }
-          console.log(this.imgs)
+          // console.log(this.imgs)
         })
         .catch((error) => {
           console.log(error)
         })
     },
     getMore () {
-      this.getImages(this.getParameters.page + 1)
+      this.getImages(this.page + 1)
     }
   },
-  created () {
+  beforeMount () {
     this.getImages(1)
+  },
+  created () {
     this.wheight = wx.getSystemInfoSync().windowHeight - 169
   }
 }
