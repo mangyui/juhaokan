@@ -3,7 +3,7 @@
     <div class="content-page" v-show="page==0">
       <Chome></Chome>
     </div>
-    <div class="content-page" v-show="page==1">
+    <div v-show="page==1">
       <Clist></Clist>
     </div>
     <div v-show="page==2">

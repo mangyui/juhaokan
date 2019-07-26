@@ -35,18 +35,18 @@ export default {
   methods: {
     onChange (event) {
       this.activeType = event.mp.detail.index
-      // this.$store.commit('updateType', event.mp.detail.index)
+      this.$store.commit('updateHeigth', wx.getSystemInfoSync().windowHeight - 165)
     }
   },
   beforeMount () {
-
+    this.$store.commit('updateHeigth', wx.getSystemInfoSync().windowHeight - 165)
   }
 }
 </script>
 
 <style lang="less">
 .list-top{
-  padding: 0;
+  padding: 0 0 45px;
 }
 </style>
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <scroll-view :style="{'height': wheight+'px'}" :scroll-y="true">
+    <scroll-view :style="{'height': sHeight+'px'}" :scroll-y="true">
       <van-search
         :value="text"
         placeholder="搜索音乐"
@@ -24,6 +24,9 @@
           </div>
         </div>
       </div>
+      <div v-show="Loading" class="my-center">
+        <van-loading  type="spinner" size="20px" color="#f60" />
+      </div>
     </scroll-view>
   </div>
 </template>
@@ -33,11 +36,11 @@ import { mapGetters } from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters(['songId', 'isPlay'])
+    ...mapGetters(['songId', 'isPlay', 'sHeight'])
   },
   data () {
     return {
-      wheight: 675,
+      Loading: false,
       musics: [],
       text: ''
     }
@@ -45,14 +48,19 @@ export default {
   methods: {
     getMusic (event) {
       this.text = event.mp.detail
-      this.$toget.getMusics({name: this.text})
-        .then((response) => {
-          this.musics = response.data.result
-          console.log(response)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+      if (this.text.trim() !== '') {
+        this.Loading = true
+        this.$toget.getMusics({name: this.text})
+          .then((response) => {
+            this.musics = response.data.result
+            console.log(response)
+            this.Loading = false
+          })
+          .catch((error) => {
+            console.log(error)
+            this.Loading = false
+          })
+      }
     },
     playOrpause (song) {
       if (this.isPlay !== 1 || song.songid !== this.songId) {
@@ -79,7 +87,6 @@ export default {
     })
   },
   created () {
-    this.wheight = wx.getSystemInfoSync().windowHeight - 169
   }
 }
 </script>

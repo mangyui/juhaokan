@@ -1,16 +1,16 @@
 <template>
   <div>
-    <scroll-view :style="{'height': wheight+'px'}" :scroll-y="true"  @scrolltolower="getMore">
+    <scroll-view :style="{'height': sHeight+'px'}" :scroll-y="true"  @scrolltolower="getMore" @scroll="onSroll">
       <div class="video-box">
         <div class="video-item" v-for="(item,index) in videos" :key="index">
-          <p class="video-title"><span>#{{item.data.category}}</span>{{item.data.title}}</p>
+          <p class="video-title"><span>#{{item.category}}</span>{{item.title}}</p>
           <div class="video-item-img">
-            <video :title="item.data.title" :id="item.data.id" :src="item.data.playUrl" :poster="item.data.cover.feed"/>
+            <video  :title="item.title" :id="item.id" :src="index<maxIndex?item.playUrl:''" :poster="index<maxIndex?item.cover:''"/>
           </div>
-          <p class="video-content">{{item.data.description}}</p>
-          <div class="video-item-author" v-if="item.data.author">
-            <img :src="item.data.author.icon" @click="toPreview(item.data.author.icon)">
-            <span>{{item.data.author.name}}</span>
+          <p class="video-content">{{item.description}}</p>
+          <div class="video-item-author" v-if="item.author">
+            <img :src="index<maxIndex?item.author.icon:''" @click="toPreview(item.author.icon)">
+            <span>{{item.author.name}}</span>
             <!-- <span>{{new Date(parseInt(item.data.date)).toLocaleString('chinese', {hour12:false})}}</span> -->
           </div>
         </div>
@@ -23,15 +23,18 @@
 </template>
 
 <script>
-
+import { mapGetters } from 'vuex'
 export default {
+  computed: {
+    ...mapGetters(['sHeight'])
+  },
   data () {
     return {
       isPlay: 0,
       videoContext: null,
       videos: [],
+      maxIndex: 2,
       videoId: [127398, 146036, 154579, 156167, 157693, 140344, 129839, 113503, 136645, 120640, 115484],
-      wheight: 675,
       page: 1,
       getParameters: {
         id: 127398
@@ -53,6 +56,12 @@ export default {
     //     videoContext.play()
     //   }, 500)
     // },
+    onSroll (event) {
+      let curr = Math.floor(event.mp.detail.scrollTop / 340) + 2
+      if (curr > this.maxIndex) {
+        this.maxIndex = curr
+      }
+    },
     toPreview (img) {
       wx.previewImage({
         // current: '', // 当前显示图片的http链接
@@ -60,11 +69,27 @@ export default {
       })
     },
     addVideoId (arr) {
+      arr.shift()
+      let newArr = []
       for (let j = 0, len = arr.length; j < len; j++) {
         if (arr[j].data.id) {
           this.videoId.push(arr[j].data.id)
+          let obj = {}
+          obj.date = arr[j].data.date
+          obj.description = arr[j].data.description
+          obj.title = arr[j].data.title
+          obj.playUrl = arr[j].data.playUrl
+          obj.cover = arr[j].data.cover.feed
+          obj.id = arr[j].data.id
+          obj.category = arr[j].data.category
+          obj.author = {
+            icon: arr[j].data.author.icon,
+            name: arr[j].data.author.name
+          }
+          newArr.push(obj)
         }
       }
+      return newArr
     },
     getVideos (index) {
       this.page = index
@@ -72,14 +97,13 @@ export default {
       this.$toget.getVideos(this.getParameters)
         .then((response) => {
           if (response.data.result.length > 0) {
-            response.data.result.shift()
+            let newVideos = this.addVideoId(response.data.result)
+            if (index === 1) {
+              this.videos = newVideos
+            } else {
+              this.videos = this.videos.concat(newVideos)
+            }
           }
-          if (index === 1) {
-            this.videos = response.data.result
-          } else {
-            this.videos = this.videos.concat(response.data.result)
-          }
-          this.addVideoId(response.data.result)
         })
         .catch((error) => {
           console.log(error)
@@ -93,7 +117,7 @@ export default {
     this.getVideos(1)
   },
   created () {
-    this.wheight = wx.getSystemInfoSync().windowHeight - 169
+
   }
 }
 </script>
@@ -121,14 +145,13 @@ export default {
     p.video-title {
       line-height: 1.5em;
       padding: 5px 0;
-      display: flex;
       align-items: center;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       span{
         border-radius: 5px;
-        padding: 1px 6px;
+        padding: 6px;
         background-color: rgba(255, 68, 68,0.7);
         color: #fff;
         font-size: 0.7em;

@@ -1,12 +1,12 @@
 <template>
   <div>
-    <scroll-view :style="{'height': wheight+'px'}" :scroll-y="true"  @scrolltolower="getMore">
+    <scroll-view :style="{'height': sHeight+'px'}" :scroll-y="true"  @scrolltolower="getMore" @scroll="onSroll">
       <div class="joke-box">
         <div v-if="item.thumbnail" class="joke-item" v-for="(item,index) in jokes" :key="item.thumbnail">
-          <div class="joke-item-author"><img :src="item.header" @click="toPreview(item.header)"><span>{{item.name}}</span></div>
+          <div class="joke-item-author"><img :src="index<maxIndex?item.header:''" @click="toPreview(item.header)"><span>{{item.name}}</span></div>
           <p>{{item.text}}</p>
           <div class="joke-item-img">
-            <img :src="item.thumbnail" mode="aspectFill" :lazy-load="true"  @error="errorFunction(index)"  @click="toPreview(item.images)">
+            <img :src="index<maxIndex?item.thumbnail:''" mode="aspectFit" :lazy-load="true"  @error="errorFunction(index)"  @click="toPreview(item.images)">
             <span>GIF</span>
           </div>
           <div class="joke-item-comment" v-show="item.top_comments_content">
@@ -23,12 +23,15 @@
 </template>
 
 <script>
-
+import { mapGetters } from 'vuex'
 export default {
+  computed: {
+    ...mapGetters(['sHeight'])
+  },
   data () {
     return {
       jokes: [],
-      wheight: 675,
+      maxIndex: 2,
       page: 1,
       getParameters: {
         type: 'gif',
@@ -37,6 +40,12 @@ export default {
     }
   },
   methods: {
+    onSroll (event) {
+      let curr = Math.floor(event.mp.detail.scrollTop / 340) + 2
+      if (curr > this.maxIndex) {
+        this.maxIndex = curr
+      }
+    },
     errorFunction (index) {
       if (this.jokes[index].thumbnail !== this.jokes[index].images) {
         this.jokes[index].thumbnail = this.jokes[index].images
@@ -73,7 +82,6 @@ export default {
     this.getJokes(1)
   },
   created () {
-    this.wheight = wx.getSystemInfoSync().windowHeight - 169
   }
 }
 </script>
@@ -106,7 +114,7 @@ export default {
       position: relative;
       img{
         width: 100%;
-        height: 160px;
+        height: 200px;
         margin: 10px 0;
         border-radius: 4px;
       }

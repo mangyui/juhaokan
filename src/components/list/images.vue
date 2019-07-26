@@ -1,9 +1,9 @@
 <template>
   <div>
-    <scroll-view :style="{'height': wheight+'px'}" :scroll-y="true" @scrolltolower="getMore">
+    <scroll-view :style="{'height': sHeight+'px'}" :scroll-y="true" @scrolltolower="getMore" @scroll="onSroll">
       <div class="imgs-box">
         <div class="imgs-item" v-for="(item, index) in imgs" :key="item">
-          <img :src="item.img" :lazy-load="true" mode="aspectFill" @click="toPreview(item)" @error="errorFunction(index)"/>
+          <img :src="index<maxIndex?item.img:''" :lazy-load="true" mode="aspectFill" @click="toPreview(item)" @error="errorFunction(index)"/>
           <span><van-button size="small" type="danger">收藏</van-button></span>
         </div>
       </div>
@@ -15,12 +15,16 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
+  computed: {
+    ...mapGetters(['sHeight'])
+  },
   data () {
     return {
       imgs: [],
-      wheight: 675,
       page: 1,
+      maxIndex: 6,
       getParameters: {
         count: 20
       }
@@ -39,6 +43,12 @@ export default {
   //   }
   // },
   methods: {
+    onSroll (event) {
+      let curr = Math.floor(event.mp.detail.scrollTop / 250) * 2 + 6
+      if (curr > this.maxIndex) {
+        this.maxIndex = curr
+      }
+    },
     errorFunction (index) {
       this.imgs.splice(index, 1)
     },
@@ -71,7 +81,6 @@ export default {
     this.getImages(1)
   },
   created () {
-    this.wheight = wx.getSystemInfoSync().windowHeight - 169
   }
 }
 </script>

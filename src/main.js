@@ -4,6 +4,7 @@ import store from './store'
 import './api/get.js'
 import './api/post.js'
 
+Vue.config._mpTrace = true
 Vue.config.productionTip = false
 App.mpType = 'app'
 
