@@ -1,6 +1,25 @@
-# mpvue_test1
+聚好看
+===
 
-> A Mpvue project
+基于mpvue的小程序
+
+<div align="center">
+    <img src="./show/pic_home.jpg" width = "280" title="天气主页"/>
+	<img src="./show/pic_video.jpg" width = "280" title="视频栏"/>
+	<img src="./show/pic_user.jpg" width = "280" title="用户中心"/>
+</div>
+<div align="center">
+    <img src="./show/pic_img.jpg" width = "280" title="图片栏"/>
+	<img src="./show/pic_music.jpg" width = "280" title="音乐栏"/>
+	<img src="./show/pic_joke.jpg" width = "280" title="段子栏"/>
+</div>
+
+也还得感谢这位老哥（peakchao）提供的api，哈
+
+说明
+------
+目前主要是针对微信小程序的开发，所以里面用了不少微信小程序原生的api，主要是为了深入学习小程序，后续如果需要移植到其他平台的小程序，需要分平台（mpvue很容易判断平台），根据不同平台走不同代码。
+
 
 ## Build Setup
 
@@ -33,5 +52,3 @@ npm build:my
 # 生成 bundle 分析报告
 npm run build --report
 ```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
