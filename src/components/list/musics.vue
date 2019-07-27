@@ -27,6 +27,7 @@
       <div v-show="Loading" class="my-center">
         <van-loading  type="spinner" size="20px" color="#f60" />
       </div>
+      <div class="blockH"></div>
     </scroll-view>
   </div>
 </template>
@@ -99,6 +100,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 13px 7px;
+    overflow: hidden;
     .music-item-left{
       display: flex;
       padding-right: 10px;
@@ -110,11 +112,17 @@ export default {
       }
       b{
         font-size: 1em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       p{
         font-size: 0.9em;
         color: #777;
         margin-top: 5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }

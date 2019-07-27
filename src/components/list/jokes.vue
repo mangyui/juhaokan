@@ -1,6 +1,6 @@
 <template>
   <div>
-    <scroll-view :style="{'height': sHeight+'px'}" :scroll-y="true"  @scrolltolower="getMore" @scroll="onSroll">
+    <scroll-view :style="{'height': sHeight+'px'}" :scroll-y="true" :scroll-top="scrollTop" @scrolltolower="getMore" @scroll="onSroll">
       <div class="joke-box">
         <div v-if="item.thumbnail" class="joke-item" v-for="(item,index) in jokes" :key="item.thumbnail">
           <div class="joke-item-author"><img :src="index<maxIndex?item.header:''" @click="toPreview(item.header)"><span>{{item.name}}</span></div>
@@ -15,10 +15,14 @@
           </div>
         </div>
       </div>
-      <div class="my-center">
-        <van-loading v-show="true" type="spinner" size="20px" color="#f60" />
+      <div v-show="Loading" class="my-center">
+        <van-loading type="spinner" size="20px" color="#f60" />
       </div>
+      <div class="blockH"></div>
     </scroll-view>
+    <div class="ic-refresh" @click="toRefresh">
+      <van-icon name="replay" size="1.5em" color="#00a7ff"/>
+    </div>
   </div>
 </template>
 
@@ -30,6 +34,8 @@ export default {
   },
   data () {
     return {
+      scrollTop: 0,
+      Loading: true,
       jokes: [],
       maxIndex: 2,
       page: 1,
@@ -40,6 +46,22 @@ export default {
     }
   },
   methods: {
+    toRefresh () {
+      wx.showLoading({
+        title: '加载中'
+      })
+      if (this.scrollTop === 0) {
+        this.scrollTop = 0.1
+      } else {
+        this.scrollTop = 0
+      }
+      this.Loading = true
+      this.maxIndex = 2
+      this.getJokes(1)
+      setTimeout(() => {
+        wx.hideLoading()
+      }, 600)
+    },
     onSroll (event) {
       let curr = Math.floor(event.mp.detail.scrollTop / 340) + 2
       if (curr > this.maxIndex) {
@@ -68,6 +90,9 @@ export default {
           } else {
             this.jokes = this.jokes.concat(response.data.result)
           }
+          if (response.data.result.length < this.getParameters.count) {
+            this.Loading = false
+          }
           // console.log(this.jokes)
         })
         .catch((error) => {
@@ -75,7 +100,9 @@ export default {
         })
     },
     getMore () {
-      this.getJokes(this.page + 1)
+      if (this.Loading === true) {
+        this.getJokes(this.page + 1)
+      }
     }
   },
   beforeMount () {

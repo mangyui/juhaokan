@@ -34,7 +34,7 @@ export default {
   data () {
     return {
       page: 1,
-      scollheight: [0, 0, 0],
+      // scollheight: [0, 0, 0],
       tabbars: [{
         title: '主页',
         normal: '/static/tabs/ic-home.png',
@@ -51,18 +51,18 @@ export default {
 
     }
   },
-  onPageScroll (e) { // 这个就是滚动到的位置,可以用这个位置来写判断
-    this.scollheight[this.page] = e.scrollTop
-  },
+  // onPageScroll (e) { // 这个就是滚动到的位置,可以用这个位置来写判断
+  //   this.scollheight[this.page] = e.scrollTop
+  // },
   methods: {
     onChange (event) {
       this.page = event.mp.detail
-      setTimeout(() => {
-        wx.pageScrollTo({
-          scrollTop: this.scollheight[this.page],
-          duration: 0
-        })
-      }, 0)
+      // setTimeout(() => {
+      //   wx.pageScrollTo({
+      //     scrollTop: this.scollheight[this.page],
+      //     duration: 0
+      //   })
+      // }, 0)
     }
   },
   created () {

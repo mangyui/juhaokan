@@ -1,6 +1,6 @@
 <template>
   <div>
-    <scroll-view :style="{'height': sHeight+'px'}" :scroll-y="true"  @scrolltolower="getMore" @scroll="onSroll">
+    <scroll-view :style="{'height': sHeight+'px'}" :scroll-y="true" :scroll-top="scrollTop" @scrolltolower="getMore" @scroll="onSroll">
       <div class="video-box">
         <div class="video-item" v-for="(item,index) in videos" :key="index">
           <p class="video-title"><span>#{{item.category}}</span>{{item.title}}</p>
@@ -15,10 +15,14 @@
           </div>
         </div>
       </div>
-      <div class="my-center">
-        <van-loading v-show="true" type="spinner" size="20px" color="#f60" />
+      <div v-show="Loading" class="my-center">
+        <van-loading type="spinner" size="20px" color="#f60" />
       </div>
+      <div class="blockH"></div>
     </scroll-view>
+    <div class="ic-refresh" @click="toRefresh">
+      <van-icon name="replay" size="1.5em" color="#00a7ff"/>
+    </div>
   </div>
 </template>
 
@@ -30,6 +34,8 @@ export default {
   },
   data () {
     return {
+      scrollTop: 0,
+      Loading: true,
       isPlay: 0,
       videoContext: null,
       videos: [],
@@ -56,6 +62,22 @@ export default {
     //     videoContext.play()
     //   }, 500)
     // },
+    toRefresh () {
+      wx.showLoading({
+        title: '加载中'
+      })
+      if (this.scrollTop === 0) {
+        this.scrollTop = 0.1
+      } else {
+        this.scrollTop = 0
+      }
+      this.Loading = true
+      this.maxIndex = 2
+      this.getVideos(1)
+      setTimeout(() => {
+        wx.hideLoading()
+      }, 600)
+    },
     onSroll (event) {
       let curr = Math.floor(event.mp.detail.scrollTop / 340) + 2
       if (curr > this.maxIndex) {
@@ -89,6 +111,9 @@ export default {
           newArr.push(obj)
         }
       }
+      if (arr.length < 10) {
+        this.Loading = false
+      }
       return newArr
     },
     getVideos (index) {
@@ -110,7 +135,9 @@ export default {
         })
     },
     getMore () {
-      this.getVideos(this.page + 1)
+      if (this.Loading === true) {
+        this.getVideos(this.page + 1)
+      }
     }
   },
   beforeMount () {

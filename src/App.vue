@@ -36,6 +36,7 @@ body{
 }
 .my-center{
   text-align: center;
+  padding: 5px 0 20px;
 }
 .container {
   height: 100%;

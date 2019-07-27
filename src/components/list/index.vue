@@ -35,18 +35,36 @@ export default {
   methods: {
     onChange (event) {
       this.activeType = event.mp.detail.index
-      this.$store.commit('updateHeigth', wx.getSystemInfoSync().windowHeight - 165)
+      // this.$store.commit('updateHeigth', wx.getSystemInfoSync().windowHeight - 120)
     }
   },
   beforeMount () {
-    this.$store.commit('updateHeigth', wx.getSystemInfoSync().windowHeight - 165)
+    this.$store.commit('updateHeigth', wx.getSystemInfoSync().windowHeight - 119)
   }
 }
 </script>
 
 <style lang="less">
 .list-top{
-  padding: 0 0 45px;
+  padding: 0;
+}
+.ic-refresh{
+  height: 40px;
+  width: 40px;
+  border-radius: 9px;
+  position: fixed;
+  right: 15px;
+  bottom: 65px;
+  background-color: #fff;
+  text-align: center;
+  line-height: 50px;
+  box-shadow: 0px 2px 3px rgba(0,0,0,0.4);
+  opacity: 0.87;
+  z-index: 99;
+}
+.blockH{
+  width: 100%;
+  height: 40px;
 }
 </style>
 

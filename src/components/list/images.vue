@@ -1,16 +1,20 @@
 <template>
   <div>
-    <scroll-view :style="{'height': sHeight+'px'}" :scroll-y="true" @scrolltolower="getMore" @scroll="onSroll">
+    <scroll-view :style="{'height': sHeight+'px'}" :scroll-top="scrollTop" :scroll-y="true" @scrolltolower="getMore" @scroll="onSroll">
       <div class="imgs-box">
         <div class="imgs-item" v-for="(item, index) in imgs" :key="item">
           <img :src="index<maxIndex?item.img:''" :lazy-load="true" mode="aspectFill" @click="toPreview(item)" @error="errorFunction(index)"/>
           <span><van-button size="small" type="danger">收藏</van-button></span>
         </div>
       </div>
-      <div class="my-center">
-        <van-loading v-show="true" type="spinner" size="20px" color="#f60" />
+      <div v-show="Loading" class="my-center">
+        <van-loading type="spinner" size="20px" color="#f60" />
       </div>
+      <div class="blockH"></div>
     </scroll-view>
+    <div class="ic-refresh" @click="toRefresh">
+      <van-icon name="replay" size="1.5em" color="#00a7ff"/>
+    </div>
   </div>
 </template>
 
@@ -22,6 +26,8 @@ export default {
   },
   data () {
     return {
+      scrollTop: 0,
+      Loading: true,
       imgs: [],
       page: 1,
       maxIndex: 6,
@@ -43,6 +49,22 @@ export default {
   //   }
   // },
   methods: {
+    toRefresh () {
+      wx.showLoading({
+        title: '加载中'
+      })
+      if (this.scrollTop === 0) {
+        this.scrollTop = 0.1
+      } else {
+        this.scrollTop = 0
+      }
+      this.Loading = true
+      this.maxIndex = 6
+      this.getImages(1)
+      setTimeout(() => {
+        wx.hideLoading()
+      }, 600)
+    },
     onSroll (event) {
       let curr = Math.floor(event.mp.detail.scrollTop / 250) * 2 + 6
       if (curr > this.maxIndex) {
@@ -67,6 +89,9 @@ export default {
           } else {
             this.imgs = this.imgs.concat(response.data.result)
           }
+          if (response.data.result.length < this.getParameters.count) {
+            this.Loading = false
+          }
           // console.log(this.imgs)
         })
         .catch((error) => {
@@ -74,7 +99,9 @@ export default {
         })
     },
     getMore () {
-      this.getImages(this.page + 1)
+      if (this.Loading === true) {
+        this.getImages(this.page + 1)
+      }
     }
   },
   beforeMount () {
